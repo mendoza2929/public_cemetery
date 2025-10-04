@@ -1,2 +1,8 @@
+<<<<<<< HEAD
 # Auto detect text files and perform LF normalization
 * text=auto
+=======
+* text=auto
+*.css linguist-vendored
+*.less linguist-vendored
+>>>>>>> 8e483e5 (first commit)
