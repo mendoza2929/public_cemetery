@@ -20,14 +20,31 @@ Route::controllers([
 	'password' => 'Auth\PasswordController',
 ]);
 
+Route::get('cemetery/admin', [
+    'as' => 'cemetery.admin',
+    'uses' => 'CemeteryController@index',
+    'middleware' => 'auth'
+]);
+
+Route::get('cemetery/login', 'CemeteryController@login');
+
+
+Route::get('cemetery/admin', 'CemeteryController@index');
+Route::get('cemetery/{id}/map', 'CemeteryController@showMap');
+Route::post('cemetery/plot_create', 'CemeteryController@createPlot');
+Route::post('cemetery/add_burial', 'CemeteryController@addBurialPlot');
+
+
 Route::get('cemetery/{encryptedId}', 'CemeteryController@show');
 
 Route::get('plot/{id}/guide', 'CemeteryController@guide');
 Route::get('cemetery/{id}/search', 'CemeteryController@searchBurials');  
 
 Route::get('reservation', 'ReservationController@create');
-
+Route::post('reservation', 'ReservationController@postCreate');
 
 Route::get('reservation/track', 'ReservationController@trackForm');
 Route::post('reservation/track', 'ReservationController@track');
+Route::get('reservation/gcash', 'ReservationController@gcashForm');
+
 

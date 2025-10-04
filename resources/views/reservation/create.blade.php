@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Important for mobile scaling -->
-    <title>Bislig City Reservation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Reservation - City Public Cemetery</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
         * {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
@@ -18,10 +22,10 @@
             line-height: 1.6;
         }
 
-        /* Reuse same header style as landing */
+        /* HEADER */
         header {
             background: url("{{ asset('assets/images/header.jpg') }}") no-repeat center center/cover;
-            height: 200px;
+            height: 300px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -32,146 +36,269 @@
         header::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            inset: 0;
             background: linear-gradient(to right, rgba(2, 44, 86, 0.7), rgba(3, 32, 53, 0.7));
         }
 
         header h1 {
             position: relative;
             z-index: 1;
-            font-size: 1.8em;
+            font-size: 2.2em;
+            padding: 0.6em 1.2em;
+            border-radius: 15px;
             background: rgba(255,255,255,0.15);
-            padding: 0.5em 1em;
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        /* Reservation Form */
-        .reservation-box {
-            max-width: 600px;
-            margin: 2em auto;
-            background: white;
-            padding: 2em;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-
-        .reservation-box h2 {
-            margin-bottom: 1.5em;
-            color: #2c3e50;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
             text-align: center;
         }
 
-        .reservation-box input,
-        .reservation-box select {
+        /* NAVIGATION */
+        nav {
+            background-color: #2c3e50;
+            text-align: center;
+            padding: 1em;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1em;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #3498db;
+        }
+
+        /* MAIN CONTENT SPLIT */
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 2em auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .form-section {
+            flex: 1 1 40%;
+            padding: 2em;
+        }
+
+        .form-section h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 1em;
+        }
+
+        .form-section input,
+        .form-section select,
+        .form-section button {
             width: 100%;
             padding: 1em;
-            margin: 0.8em 0;
+            margin-bottom: 1em;
             border: 1px solid #ccc;
             border-radius: 8px;
             font-size: 1rem;
         }
 
-        .reservation-box input:focus,
-        .reservation-box select:focus {
+        .form-section input:focus,
+        .form-section select:focus {
             border-color: #3498db;
             outline: none;
-            box-shadow: 0 0 6px rgba(52,152,219,0.3);
         }
 
-        .reservation-box button {
-            width: 100%;
-            padding: 1.2em;
-            background: #3498db;
-            border: none;
+        .form-section button {
+            background-color: #3498db;
             color: white;
+            border: none;
             font-weight: bold;
-            font-size: 1rem;
-            border-radius: 8px;
             cursor: pointer;
             transition: 0.3s;
         }
 
-        .reservation-box button:hover {
-            background: #2980b9;
+        .form-section button:hover {
+            background-color: #2980b9;
         }
 
+        /* MAP */
+        .map-section {
+            flex: 1 1 60%;
+            height: 500px;
+            width: 100%;
+            min-height: 300px; /* Ensures visible map */
+        }
+
+        /* FOOTER */
         footer {
             text-align: center;
-            padding: 1em;
+            padding: 1.5em;
             background-color: #2c3e50;
             color: white;
             margin-top: 2em;
         }
 
-        /* 📱 Mobile Responsive */
-        @media (max-width: 768px) {
-            header {
-                height: 150px;
-            }
-            header h1 {
-                font-size: 1.5em;
-            }
-            .reservation-box {
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
                 margin: 1em;
-                padding: 1.5em;
-                border-radius: 0; /* full-width style */
-                max-width: 100%;
-                box-shadow: none;
             }
-            .reservation-box input,
-            .reservation-box select,
-            .reservation-box button {
-                font-size: 1.1rem;
-                padding: 1.2em;
+            .form-section {
+                padding: 1.5em;
+            }
+            .map-section {
+                height: 400px !important;
+                min-height: 350px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header { height: 200px; }
+            header h1 { font-size: 1.5em; padding: 0.5em; }
+            .map-section { height: 400px !important; }
+            .form-section input,
+            .form-section select,
+            .form-section button {
+                font-size: 0.95rem;
             }
         }
 
         @media (max-width: 480px) {
-            header {
-                height: 120px;
+            nav a {
+                display: block;
+                margin: 0.5em 0;
             }
-            header h1 {
-                font-size: 1.2em;
-                padding: 0.4em 0.8em;
+            .main-container {
+                margin: 0.5em;
             }
-            .reservation-box {
-                margin: 0;
-                padding: 1.2em;
-                min-height: 100vh; /* form feels full screen */
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
+            .map-section {
+                height: 320px !important;
+                min-height: 300px;
             }
         }
     </style>
 </head>
+
 <body>
+    <!-- HEADER -->
+    <header>
+        <h1>City Public Cemetery Reservation</h1>
+    </header>
 
-<header>
-    <h1>Bislig City Public Cemetery Reservation</h1>
-</header>
+    <!-- NAV -->
+    <nav>
+        <a href="{{ url('/') }}">Home</a>
+    </nav>
 
-<div class="reservation-box">
-    <h2>Reserve a Plot</h2>
-    <form action="{{ url('reservation') }}" method="POST">
-        
-        <input type="text" name="name" placeholder="Your Full Name" required>
-        <input type="email" name="email" placeholder="Your Email" required>
-        <select name="cemetery" required>
-            <option value="">Select Cemetery</option>
-            <option value="1">Cemetery 1</option>
-            <option value="2">Cemetery 2</option>
-        </select>
-        <input type="date" name="date" required>
-        <button type="submit">Reserve Now</button>
-    </form>
-</div>
+    <!-- FORM + MAP -->
+    <div class="main-container">
+        <div class="map-section" id="map"></div>
+        <div class="form-section">
+        <h2>Reserve a Plot</h2>
+        <form action="{{ url('reservation') }}" method="POST">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+            <input type="text" name="name" placeholder="Full Name" required>
+            <input type="text" name="address" placeholder="Address" required>
+            <input type="number" name="number" placeholder="Contact Number" required>
 
-<footer>
-    <p>&copy; 2025 Bislig City Public Cemetery. All rights reserved.</p>
-</footer>
+            <select name="plot_id" required>
+                <option value="">Select Available Plot</option>
+                @foreach ($cemetery->sections as $section)
+                    @foreach ($section->plots as $plot)
+                        <option value="{{ $plot->id }}">
+                            Section {{ $section->name }} - Plot {{ $plot->number }}
+                        </option>
+                    @endforeach
+                @endforeach
+            </select>
+           <select name="payment_method" id="payment_method" required>
+                <option value="">Select Payment Method</option>
+                <option value="Cash">Cash</option>
+                <option value="Gcash">Gcash</option>
+            </select>
 
+            <button type="submit">Reserve Now</button>
+        </form>
+    </div>
+
+    <div id="gcashModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+        <div style="background:white; padding:2em; border-radius:10px; width:300px; text-align:center;">
+            <h3>Gcash Payment</h3>
+            <p>Send your payment to: <b>09123456789</b></p>
+            <p>After payment, click Confirm to reserve your plot.</p>
+            <button id="confirmGcash">Confirm Reservation</button>
+            <button onclick="document.getElementById('gcashModal').style.display='none'">Cancel</button>
+        </div>
+    </div>
+
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2025 City Public Cemetery. All rights reserved.</p>
+    </footer>
+
+    <!-- MAP SCRIPT -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        var cemetery = {!! json_encode($cemetery) !!};
+
+        var map = L.map('map', {
+            minZoom: 14,
+            maxZoom: 18
+        }).setView([parseFloat(cemetery.lat), parseFloat(cemetery.lng)], 16);
+
+        // Satellite layer
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri'
+        }).addTo(map);
+
+        // Add markers for available plots
+        @foreach($cemetery->sections as $section)
+            @foreach($section->plots as $plot)
+                var marker = L.circleMarker([{{ $plot->lat }}, {{ $plot->lng }}], {
+                    color: 'green',
+                    fillColor: 'green',
+                    fillOpacity: 0.8,
+                    radius: 4
+                }).addTo(map);
+                marker.bindTooltip("Plot {{ $plot->number }} (Available)", {
+                    direction: 'top'
+                });
+            @endforeach
+        @endforeach
+
+        // 🔧 Fix invisible map on mobile
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 500);
+        });
+
+        window.addEventListener('resize', function() {
+            map.invalidateSize();
+        });
+
+         document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop default submit
+
+            const paymentMethod = document.getElementById('payment_method').value;
+
+            if(paymentMethod === 'Gcash') {
+                // Redirect to Gcash details page (pass form data via query params or session)
+                const formData = new FormData(this);
+                const query = new URLSearchParams(formData).toString();
+                window.location.href = '/reservation/gcash?' + query;
+            } else {
+                // Cash: submit the form via AJAX or normal form submission
+                this.submit(); // normal submission
+            }
+        });
+
+    </script>
 </body>
 </html>

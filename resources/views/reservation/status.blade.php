@@ -41,6 +41,21 @@
         backdrop-filter: blur(6px);
     }
 
+       nav {
+            background-color: #2c3e50;
+            padding: 1em;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1em;
+            font-weight: bold;
+        }
+        nav a:hover {
+            color: #3498db;
+        }
+
     .status-box {
         max-width: 1000px;
         margin: 2em auto;
@@ -156,7 +171,9 @@
 <header>
     <h1>Track Reservation</h1>
 </header>
-
+    <nav>
+        <a href="{{ url('/') }}">Home</a>
+    </nav>
 <div class="status-box">
     <h2>Reservation # {{ $reservation->reservation_no }}</h2>
 
@@ -183,7 +200,7 @@
     
 </div>
   <footer>
-        <p>&copy; 2025 Bislig City Public Cemetery. All rights reserved.</p>
+        <p>&copy; 2025 City Public Cemetery. All rights reserved.</p>
     </footer>
 
 </body>

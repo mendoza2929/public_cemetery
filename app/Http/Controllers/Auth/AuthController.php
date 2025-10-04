@@ -4,7 +4,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\Registrar;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-
+use Illuminate\Http\Request;
 class AuthController extends Controller {
 
 	/*
@@ -34,5 +34,34 @@ class AuthController extends Controller {
 
 		$this->middleware('guest', ['except' => 'getLogout']);
 	}
+
+	public function postLogin(Request $request)
+    {
+        $credentials = $request->only('name', 'password');
+
+        if ($this->auth->attempt($credentials, $request->has('remember')))
+        {
+            return $this->handleUserWasAuthenticated($request);
+        }
+
+        return redirect($this->loginPath())
+                    ->withInput($request->only('name', 'remember'))
+                    ->withErrors([
+                        'name' => $this->getFailedLoginMessage(),
+                    ]);
+    }
+
+	protected function handleUserWasAuthenticated(Request $request)
+    {
+        $user = $this->auth->user();
+
+        if ($user->role == 'admin') {
+            return redirect()->intended('cemetery/admin');
+        } elseif ($user->role == 'staff') {
+            return redirect()->intended('cemetery/staff');
+        }
+        return redirect()->intended($this->redirectPath());
+    }
+
 
 }

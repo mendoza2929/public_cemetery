@@ -1,61 +1,133 @@
-@extends('app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - City Public Cemetery</title>
 
-@section('content')
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-8 col-md-offset-2">
-			<div class="panel panel-default">
-				<div class="panel-heading">Login</div>
-				<div class="panel-body">
-					@if (count($errors) > 0)
-						<div class="alert alert-danger">
-							<strong>Whoops!</strong> There were some problems with your input.<br><br>
-							<ul>
-								@foreach ($errors->all() as $error)
-									<li>{{ $error }}</li>
-								@endforeach
-							</ul>
-						</div>
-					@endif
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-					<form class="form-horizontal" role="form" method="POST" action="{{ url('/auth/login') }}">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
+    <style>
+        body {
+            background: linear-gradient(180deg, #2c3e50, #1a252f);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            margin: 0;
+        }
 
-						<div class="form-group">
-							<label class="col-md-4 control-label">E-Mail Address</label>
-							<div class="col-md-6">
-								<input type="email" class="form-control" name="email" value="{{ old('email') }}">
-							</div>
-						</div>
+        .login-container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            text-align: center;
+        }
 
-						<div class="form-group">
-							<label class="col-md-4 control-label">Password</label>
-							<div class="col-md-6">
-								<input type="password" class="form-control" name="password">
-							</div>
-						</div>
+        .login-container h2 {
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
 
-						<div class="form-group">
-							<div class="col-md-6 col-md-offset-4">
-								<div class="checkbox">
-									<label>
-										<input type="checkbox" name="remember"> Remember Me
-									</label>
-								</div>
-							</div>
-						</div>
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            border-radius: 8px;
+        }
 
-						<div class="form-group">
-							<div class="col-md-6 col-md-offset-4">
-								<button type="submit" class="btn btn-primary">Login</button>
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.15);
+            outline: none;
+            box-shadow: 0 0 0 2px #3498db;
+        }
 
-								<a class="btn btn-link" href="{{ url('/password/email') }}">Forgot Your Password?</a>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-@endsection
+        .btn-login {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: #2980b9;
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: #ccc;
+            margin-top: 1.5rem;
+        }
+
+        .brand-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .brand-header i {
+            font-size: 2rem;
+            color: #3498db;
+        }
+
+        .error-message {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #ffcccc;
+            padding: 0.6rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="brand-header">
+            <i class="bi bi-tree-fill"></i>
+            <h2>Login</h2>
+        </div>
+        @if (session('error'))
+            <div class="error-message">{{ session('error') }}</div>
+        @endif
+
+       <form class="form-horizontal" role="form" method="POST" action="{{ url('/auth/login') }}">
+             <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+            <div class="mb-3">
+                <input type="text" name="name" class="form-control" placeholder="username" required>
+            </div>
+
+            <div class="mb-3">
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
+
+            <button type="submit" class="btn-login">Login</button>
+        </form>
+
+        <p class="footer-text mt-4">&copy; 2025 City Public Cemetery</p>
+    </div>
+
+</body>
+</html>

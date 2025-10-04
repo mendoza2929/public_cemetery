@@ -194,12 +194,12 @@ header h1 {
 </head>
 <body>
     <header>
-        <h1>Welcome to Bislig City Public Cemetery</h1>
+        <h1>Welcome to City Public Cemetery</h1>
     </header>
     <div class="main-content">
         <div class="section">
             <h2>About Us</h2>
-            <p>Established to honor and remember, Bislig City Public Cemetery provides a peaceful resting place for our community. Learn more about our history and dedication to care.</p>
+            <p>Established to honor and remember, City Public Cemetery provides a peaceful resting place for our community. Learn more about our history and dedication to care.</p>
         </div>
         <div class="section">
             <h2>Services</h2>
@@ -214,7 +214,7 @@ header h1 {
         </div>
     </div>
     <footer>
-        <p>&copy; 2025 Bislig City Public Cemetery. All rights reserved.</p>
+        <p>&copy; 2025 City Public Cemetery. All rights reserved.</p>
     </footer>
 
 

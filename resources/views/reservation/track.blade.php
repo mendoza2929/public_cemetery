@@ -137,7 +137,7 @@
         </form>
     </div>
     <footer>
-        <p>&copy; 2025 Bislig City Public Cemetery. All rights reserved.</p>
+        <p>&copy; 2025 City Public Cemetery. All rights reserved.</p>
     </footer>
 </body>
 </html>

@@ -14,11 +14,11 @@ class Plot extends Model {
 
     public function getStatusColorAttribute() {
         $colors = [
-            'available' => '#A52A2A', // Brown
-            'sold' => '#FF0000', // Red
+            'available' => '#30a52aff', // Brown
+            'sold' => '#ff000053', // Red
             'reserved' => '#FFFF00', // Yellow
-            'quitclaim' => '#00FF00', // Green
-            'restricted' => '#FFA500', // Orange
+            'quitclaim' => '#ff00e6ff', // Green
+            'restricted' => '#ff0000ff', // Orange
             'sold_with_burial' => '#800080' // Purple
         ];
         return $colors[$this->status] ?: '#000000'; // Fixed syntax

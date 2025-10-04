@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use App\Cemetery;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Reservation;
@@ -26,9 +27,55 @@ class ReservationController extends Controller {
 	 * @return Response
 	 */
 	public function create()
-    {
-        return view('reservation.create');
-    }
+	{
+		$cemetery = Cemetery::with(['sections.plots' => function ($q) {
+			$q->where('status', 'available');
+		}])->first(); 
+
+		return view('reservation.create', compact('cemetery'));
+	}
+
+	public function postCreate()
+	{
+		$name = \Request::get('name');
+		$address = \Request::get('address');
+		$number = \Request::get('number');
+		$plot_id = \Request::get('plot_id');
+		$payment_method = \Request::get('payment_method');
+		
+		$year = date('Y'); 
+		$prefix = 'bislig' . $year;
+
+		$lastReservation = \App\Reservation::where('reservation_no', 'like', $prefix . '%')
+							->orderBy('reservation_no', 'desc')
+							->first();
+
+		if ($lastReservation) {
+			$lastNumber = (int) substr($lastReservation->reservation_no, -4);
+			$newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+		} else {
+			$newNumber = '0001';
+		}
+
+		$reservation_no = $prefix . $newNumber;
+
+
+		$reservation = new \App\Reservation();
+		$reservation->name = $name;
+		$reservation->address = $address;
+		$reservation->number = $number;
+		$reservation->plot_id = $plot_id;
+		$reservation->payment_method = $payment_method;
+		$reservation->status = 'pending';
+		$reservation->reservation_no = $reservation_no;
+		$reservation->date = date('Y-m-d'); 
+		$reservation->save();
+
+		return view('reservation.confirmation', [
+			'reservation' => $reservation
+		]);
+	}
+
 
 	public function trackForm()
 	{
@@ -46,6 +93,16 @@ class ReservationController extends Controller {
 
 		return view('reservation.status', compact('reservation'));
 	}
+
+	public function gcashForm(Request $request)
+	{
+		// You can get all query params if needed
+		$data = $request->all(); 
+
+		// Show a view for Gcash payment confirmation
+		return view('reservation.gcash', compact('data'));
+	}
+
 
 	/**
 	 * Store a newly created resource in storage.
