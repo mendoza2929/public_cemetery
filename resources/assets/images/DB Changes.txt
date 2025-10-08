@@ -1,0 +1,36 @@
+DB Changes
+
+is_new : Important to update all data later
+1. old
+2. new
+3. returnee
+4. transferee
+
+
+Added Tables
+
+CREATE TABLE `spc`.`bussiness` ( `id` INT NOT NULL AUTO_INCREMENT , `person_id` INT NOT NULL , `title` TEXT NOT NULL , `position` TEXT NOT NULL , `address` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+CREATE TABLE `spc`.`spouse` ( `id` INT NOT NULL AUTO_INCREMENT , `person_id` INT NOT NULL , `fname` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+CREATE TABLE `spc`.`theses` ( `id` INT NOT NULL AUTO_INCREMENT , `person_id` INT NOT NULL , `enrollment_id` INT NOT NULL , `description` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+CREATE TABLE `spc`.`gs_files` ( `id` INT NOT NULL AUTO_INCREMENT , `person_id` INT NOT NULL , `essay` TEXT NOT NULL , `prc` TEXT NOT NULL , `honorable_dismissal` TEXT NOT NULL , `tor` TEXT NOT NULL , `psa_m` TEXT NOT NULL , `psa` TEXT NOT NULL , `coe` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+CREATE TABLE `spc`.`publication` ( `id` INT NOT NULL AUTO_INCREMENT , `person_id` INT NOT NULL , `enrollment_id` INT NOT NULL , `title` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+
+
+Altered Tables
+
+ALTER TABLE `person_work_experience` ADD `inclusive_year` TEXT NOT NULL AFTER `job_description`;
+
+ALTER TABLE `person_education` ADD `award` TEXT NOT NULL AFTER `created_at`;
+
+ALTER TABLE `person` ADD `occupation` TEXT NOT NULL AFTER `student_fb_address`;
+
+ALTER TABLE `admission_applicant` ADD `classification_id` INT NOT NULL AFTER `id`;
+
+ALTER TABLE `classification_term` ADD `start_date` DATE NOT NULL AFTER `updated_at`;
+
+ALTER TABLE `classification_term` ADD `is_admission` TINYINT NOT NULL DEFAULT '0' AFTER `is_enrollment`;
