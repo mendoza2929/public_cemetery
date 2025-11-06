@@ -34,6 +34,10 @@ Route::get('cemetery/{id}/map', 'CemeteryController@showMap');
 Route::post('cemetery/plot_create', 'CemeteryController@createPlot');
 Route::post('cemetery/add_burial', 'CemeteryController@addBurialPlot');
 
+Route::get('cemetery/reservation', 'CemeteryController@reservation');
+Route::get('reservation/fetch', 'CemeteryController@reservationFetch');
+Route::post('reservation/update-status', 'CemeteryController@reservationUpdateStatus');
+
 
 Route::get('cemetery/{encryptedId}', 'CemeteryController@show');
 
@@ -46,5 +50,7 @@ Route::post('reservation', 'ReservationController@postCreate');
 Route::get('reservation/track', 'ReservationController@trackForm');
 Route::post('reservation/track', 'ReservationController@track');
 Route::get('reservation/gcash', 'ReservationController@gcashForm');
+Route::get('reservation/paymaya', 'ReservationController@paymayaForm');
+Route::get('reservation/bank', 'ReservationController@bankForm');
 
 

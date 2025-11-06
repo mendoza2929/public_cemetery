@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="icon" href="{{ asset('assests/Logo.png') }}">
 
     <style>
         body {
@@ -121,11 +122,10 @@
 <body>
     <!-- SIDEBAR -->
     <div class="sidebar">
-        <h2><i class="bi bi-tree-fill"></i> Cemetery Admin</h2>
+        <h2><img src="{{ asset('assests/Logo.png') }}" alt="Gcash QR Code" style="max-width:200px; width:25%; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.2);"></h2>
         <a href="{{ url('cemetery/admin') }}"><i class="bi bi-speedometer2"></i> Dashboard</a>
         <a href="{{ url('cemetery/1/map') }}" class="active"><i class="bi bi-map"></i> Plots</a>
-        <a href="#"><i class="bi bi-calendar-check"></i> Reservations</a>
-        <a href="#"><i class="bi bi-people"></i> Users</a>
+          <a href="{{ url('cemetery/reservation') }}"><i class="bi bi-calendar-check"></i> Reservations</a>
         <a href="{{ url('auth/logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a>
     </div>
 

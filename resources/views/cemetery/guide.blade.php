@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redirecting to Google Maps...</title>
+    <link rel="icon" href="{{ asset('assests/Logo.png') }}">
 </head>
 <body>
     <p>Opening directions in Google Maps...</p>

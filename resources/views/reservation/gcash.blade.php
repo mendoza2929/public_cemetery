@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gcash Payment - City Public Cemetery</title>
+    <link rel="icon" href="{{ asset('assests/Logo.png') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 
     <style>
@@ -160,6 +161,8 @@
         <h4>Reservation Info</h4>
         <ul>
             <li><strong>Name:</strong> {{ $data['name'] }}</li>
+            <li><strong>Name of Deceased:</strong> {{ $data['name_deceased'] }}</li>
+            <li><strong>Relationship:</strong> {{ $data['name_deceased'] }}</li>
             <li><strong>Address:</strong> {{ $data['address'] }}</li>
             <li><strong>Contact Number:</strong> {{ $data['number'] }}</li>
         </ul>

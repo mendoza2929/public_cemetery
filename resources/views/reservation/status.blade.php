@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reservation Status</title>
+<link rel="icon" href="{{ asset('assests/Logo.png') }}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
     body {
@@ -182,13 +183,13 @@
             <div class="step {{ in_array($reservation->status, ['pending','in_process','done']) ? 'active' : '' }}">
                 <i class="fa-solid fa-file-pen"></i>
             </div>
-            <div class="label">Pending</div>
+            <div class="label">Verify</div>
         </div>
         <div>
             <div class="step {{ in_array($reservation->status, ['in_process','done']) ? 'active' : '' }}">
                 <i class="fa-solid fa-cross"></i>
             </div>
-            <div class="label">In Process</div>
+            <div class="label">For Review</div>
         </div>
         <div>
             <div class="step {{ $reservation->status == 'done' ? 'active' : '' }}">

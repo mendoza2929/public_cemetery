@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Reservation - City Public Cemetery</title>
-
+    <link rel="icon" href="{{ asset('assests/Logo.png') }}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -201,6 +201,8 @@
         <form action="{{ url('reservation') }}" method="POST">
             <input type="hidden" name="_token" value="{{ csrf_token() }}" />
             <input type="text" name="name" placeholder="Full Name" required>
+            <input type="text" name="name_deceased" placeholder="Name of Deceased" required>
+            <input type="text" name="relationship" placeholder="Relationship" required>
             <input type="text" name="address" placeholder="Address" required>
             <input type="number" name="number" placeholder="Contact Number" required>
 
@@ -218,20 +220,12 @@
                 <option value="">Select Payment Method</option>
                 <option value="Cash">Cash</option>
                 <option value="Gcash">Gcash</option>
+                <option value="Paymaya">PayMaya</option>
+                <option value="BankTransfer">Bank Transfer</option>
             </select>
 
             <button type="submit">Reserve Now</button>
         </form>
-    </div>
-
-    <div id="gcashModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
-        <div style="background:white; padding:2em; border-radius:10px; width:300px; text-align:center;">
-            <h3>Gcash Payment</h3>
-            <p>Send your payment to: <b>09123456789</b></p>
-            <p>After payment, click Confirm to reserve your plot.</p>
-            <button id="confirmGcash">Confirm Reservation</button>
-            <button onclick="document.getElementById('gcashModal').style.display='none'">Cancel</button>
-        </div>
     </div>
 
 
@@ -266,13 +260,13 @@
                     fillOpacity: 0.8,
                     radius: 4
                 }).addTo(map);
-                marker.bindTooltip("Plot {{ $plot->number }} (Available)", {
+                marker.bindTooltip("Plot {{ $plot->number }} ({{ $plot->price }})", {
                     direction: 'top'
                 });
             @endforeach
         @endforeach
 
-        // 🔧 Fix invisible map on mobile
+    
         window.addEventListener('load', function() {
             setTimeout(() => {
                 map.invalidateSize();
@@ -284,19 +278,26 @@
         });
 
          document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault(); // Stop default submit
+            e.preventDefault();
 
             const paymentMethod = document.getElementById('payment_method').value;
+            const formData = new FormData(this);
+            const query = new URLSearchParams(formData).toString();
 
-            if(paymentMethod === 'Gcash') {
-                // Redirect to Gcash details page (pass form data via query params or session)
-                const formData = new FormData(this);
-                const query = new URLSearchParams(formData).toString();
-                window.location.href = '/reservation/gcash?' + query;
+            let redirectUrl = '';
+
+            if (paymentMethod === 'Gcash') {
+                redirectUrl = '/reservation/gcash?' + query;
+            } else if (paymentMethod === 'Paymaya') {
+                redirectUrl = '/reservation/paymaya?' + query;
+            } else if (paymentMethod === 'BankTransfer') {
+                redirectUrl = '/reservation/bank?' + query;
             } else {
-                // Cash: submit the form via AJAX or normal form submission
-                this.submit(); // normal submission
+           
+                this.submit();
+                return;
             }
+            window.location.href = redirectUrl;
         });
 
     </script>

@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservation Confirmation</title>
+    <title>PayMaya Payment - City Public Cemetery</title>
     <link rel="icon" href="{{ asset('assests/Logo.png') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 
     <style>
-        body {
+        * {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
             font-family: Arial, sans-serif;
+        }
+
+        body {
             background-color: #f4f4f4;
             color: #333;
-            margin: 0;
+            line-height: 1.6;
         }
 
         /* HEADER */
@@ -30,7 +35,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: rgba(2,44,86,0.7);
+            background: linear-gradient(to right, rgba(2, 44, 86, 0.7), rgba(3, 32, 53, 0.7));
         }
 
         header h1 {
@@ -41,6 +46,7 @@
             border-radius: 15px;
             background: rgba(255,255,255,0.15);
             backdrop-filter: blur(8px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
             text-align: center;
         }
 
@@ -63,51 +69,38 @@
         }
 
         /* MAIN CONTENT */
-        .container {
+        .main-container {
             max-width: 600px;
             margin: 2em auto;
             background: white;
             padding: 2em;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-            text-align: center;
         }
 
         h2 {
             color: #2c3e50;
+            text-align: center;
             margin-bottom: 1em;
         }
 
-        /* Reservation Info List */
-        .reservation-info {
-            list-style: none; /* Remove bullets */
+        ul {
+            list-style: none;
             padding: 0;
-            margin: 1em 0;
-            text-align: left;
+            margin-bottom: 1.5em;
         }
 
-        .reservation-info li {
-            background: #f9f9f9;
+        ul li {
+            background: #f4f4f4;
             padding: 0.75em 1em;
             margin-bottom: 0.5em;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .note {
-            background: #fff3cd;
-            color: #856404;
-            padding: 1em;
-            border-radius: 8px;
-            margin-top: 1em;
-            border: 1px solid #ffeeba;
+            border-radius: 6px;
+            border: 1px solid #ccc;
         }
 
         button {
             width: 100%;
             padding: 1em;
-            margin-top: 1em;
             border: none;
             border-radius: 8px;
             background-color: #3498db;
@@ -115,6 +108,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
+            margin-bottom: 0.5em;
         }
 
         button:hover {
@@ -132,7 +126,7 @@
 
         /* RESPONSIVE */
         @media (max-width: 480px) {
-            .container {
+            .main-container {
                 margin: 1em;
                 padding: 1.5em;
             }
@@ -144,43 +138,50 @@
 <body>
     <!-- HEADER -->
     <header>
-        <h1>Reservation Confirmed</h1>
+        <h1>Gcash Payment</h1>
     </header>
 
     <!-- NAV -->
     <nav>
         <a href="{{ url('/') }}">Home</a>
-        <a href="{{ url('reservation') }}">New Reservation</a>
+        <a href="{{ url('reservation') }}">Back to Reservation</a>
     </nav>
 
     <!-- MAIN CONTENT -->
-    <div class="container">
-        <h2>Your Reservation Number:</h2>
-        <p style="font-size:1.5em; font-weight:bold; color:#2c3e50;">{{ $reservation->reservation_no }}</p>
-        <p style="font-size:1.5em; font-weight:bold; color:#2c3e50;">{{ $plot->number }}</p>
-        <ul class="reservation-info">
-            <li><strong>Name:</strong> {{ $reservation->name }}</li>
-            <li><strong>Name of Deceased:</strong> {{ $reservation->name_deceased }}</li>
-            <li><strong>Relationship:</strong> {{ $reservation->relationship }}</li>
-            <li><strong>Address:</strong> {{ $reservation->address }}</li>
-            <li><strong>Contact Number:</strong> {{ $reservation->number }}</li>
-            <li><strong>Payment Method:</strong> {{ $reservation->payment_method }}</li>
-            <li><strong>Status:</strong> {{ ucfirst($reservation->status) }}</li>
-            <li><strong>Date:</strong> {{ $reservation->date }}</li>
+    <div class="main-container">
+        <h2>Send Payment via Paymaya</h2>
+   
+    <p style="text-align:center; margin-top:1em;">
+        <img src="{{ asset('assests/paymaya.png') }}" alt="Gcash QR Code" style="max-width:200px; width:100%; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.2);">
+    </p>
+
+
+        <h4>Reservation Info</h4>
+        <ul>
+            <li><strong>Name:</strong> {{ $data['name'] }}</li>
+            <li><strong>Name of Deceased:</strong> {{ $data['name_deceased'] }}</li>
+            <li><strong>Relationship:</strong> {{ $data['name_deceased'] }}</li>
+            <li><strong>Address:</strong> {{ $data['address'] }}</li>
+            <li><strong>Contact Number:</strong> {{ $data['number'] }}</li>
         </ul>
 
-        <div class="note">
-            Please screenshot or take note of your reservation number. You will need this to check the status of your reservation.
-        </div>
+        <form action="{{ url('reservation') }}" method="POST">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+            <input type="hidden" name="name" value="{{ $data['name'] }}">
+            <input type="hidden" name="address" value="{{ $data['address'] }}">
+            <input type="hidden" name="number" value="{{ $data['number'] }}">
+            <input type="hidden" name="plot_id" value="{{ $data['plot_id'] }}">
+            <input type="hidden" name="name_deceased" value="{{ $data['name_deceased'] }}">
+            <input type="hidden" name="relationship" value="{{ $data['relationship'] }}">
+            <input type="hidden" name="payment_method" value="PayMaya">
 
-        <form action="{{ url('/') }}">
-            <button type="submit">Back to Home</button>
+            <button type="submit">Confirm Reservation</button>
         </form>
     </div>
 
     <!-- FOOTER -->
     <footer>
-        &copy; 2025 City Public Cemetery. All rights reserved.
+        <p>&copy; 2025 City Public Cemetery. All rights reserved.</p>
     </footer>
 </body>
 </html>

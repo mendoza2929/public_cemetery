@@ -5,12 +5,14 @@ use App\Cemetery;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Plot;
+use App\Reservation;
 use App\Section;
 use Illuminate\Http\Request;
 use Crypt;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt as FacadesCrypt;
+use Yajra\Datatables\Datatables;
 class CemeteryController extends Controller {
 
 	/**
@@ -106,6 +108,58 @@ class CemeteryController extends Controller {
 		));
 	}
 
+	public function reservation(){
+		return view('cemetery.reservation');
+	}
+
+	public function reservationFetch()
+	{
+		$reservation_list = \App\Reservation::join('plots', 'reservation.plot_id', '=', 'plots.id')
+			->select(
+				'reservation.id',
+				'reservation.name',
+				'reservation.name_deceased',
+				'reservation.relationship',
+				'reservation.address',
+				'reservation.number',
+				'reservation.date',
+				'reservation.reservation_no',
+				'reservation.status',
+				'reservation.payment_method',
+				'plots.number as plot_number',
+				'plots.price as plot_price'
+			)
+			->get();
+
+		 return Datatables::of($reservation_list)->make(true);
+	}
+
+	public function reservationUpdateStatus()
+	{
+		$id = \Request::get('id');
+		$status = \Request::get('status');
+
+		$reservation = \App\Reservation::find($id);
+
+		if (!$reservation) {
+			return response()->json([
+				'success' => false,
+				'message' => 'Reservation not found.'
+			], 404);
+		}
+
+
+		$reservation->status = $status;
+		$reservation->save();
+
+		return response()->json([
+			'success' => true,
+			'message' => 'Reservation status updated successfully.',
+			'status' => $status
+		]);
+	}
+
+
 
 	public function login(){
 		 return view('cemetery.login');
@@ -119,7 +173,17 @@ class CemeteryController extends Controller {
 		$cemetery = Cemetery::findOrFail($id);
 
         $cemetery = Cemetery::with(['sections', 'sections.plots', 'sections.plots.burial'])->findOrFail($id);
-        return view('cemetery.map', compact('cemetery'));
+		// dd($cemetery);
+
+		$statusColors = [
+			'available'        => ['color' => '#30a52aff', 'label' => 'Available'],
+			'sold'             => ['color' => '#ff000053', 'label' => 'Sold'],
+			'reserved'         => ['color' => '#FFFF00',   'label' => 'Reserved'],
+			'quitclaim'        => ['color' => '#ff00e6ff', 'label' => 'Quitclaim'],
+			'restricted'       => ['color' => '#ff0000ff', 'label' => 'Restricted'],
+			'sold_with_burial' => ['color' => '#800080',   'label' => 'Sold with Burial'],
+		];
+        return view('cemetery.map', compact('cemetery','statusColors'));
     }
 
 	public function showMap($id)
