@@ -37,6 +37,8 @@ Route::post('cemetery/add_burial', 'CemeteryController@addBurialPlot');
 Route::get('cemetery/reservation', 'CemeteryController@reservation');
 Route::get('reservation/fetch', 'CemeteryController@reservationFetch');
 Route::post('reservation/update-status', 'CemeteryController@reservationUpdateStatus');
+Route::get('reservation/certificate/{id}', 'ReservationController@viewCertificate');
+
 
 
 Route::get('cemetery/{encryptedId}', 'CemeteryController@show');

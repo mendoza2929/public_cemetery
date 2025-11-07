@@ -143,6 +143,16 @@
                         html += `<option value="${opt.value}" ${data === opt.value ? 'selected' : ''}>${opt.text}</option>`;
                     });
                     html += `</select>`;
+
+                     if (data === 'done') {
+                        html += `<div class="mt-2">
+                                    <a href="{{ url('reservation/certificate') }}/${row.id}" 
+                                    class="btn btn-sm btn-success" target="_blank">
+                                    <i class="bi bi-file-earmark-text"></i> View Reservation Certificate
+                                    </a>
+                                </div>`;
+                    }
+                    
                     return html;
                 }
             }
@@ -163,6 +173,10 @@
             },
             success: function(response) {
                 console.log('Status updated:', response);
+                
+                if (response.success) {
+                    $('#reservationTable').DataTable().ajax.reload(null, false);
+                }
             },
             error: function(xhr) {
                 alert('Error updating status');

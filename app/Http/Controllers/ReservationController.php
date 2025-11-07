@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use PDF;
 
 class ReservationController extends Controller {
 
@@ -133,6 +134,20 @@ class ReservationController extends Controller {
 
 		// Show a view for Gcash payment confirmation
 		return view('reservation.bank', compact('data'));
+	}
+
+	public function viewCertificate($id)
+	{
+		$reservation = \App\Reservation::join('plots', 'reservation.plot_id', '=', 'plots.id')
+			->select('reservation.*', 'plots.number as plot_number')
+			->find($id);
+
+		if (!$reservation) {
+			abort(404, 'Reservation not found.');
+		}
+
+		$pdf = PDF::loadView('reservation.certificate', compact('reservation'));
+		return $pdf->stream('Reservation-Certificate-' . $reservation->reservation_no . '.pdf');
 	}
 
 

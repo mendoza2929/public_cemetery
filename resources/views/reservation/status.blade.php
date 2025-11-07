@@ -178,27 +178,47 @@
 <div class="status-box">
     <h2>Reservation # {{ $reservation->reservation_no }}</h2>
 
-    <div class="progress-container">
-        <div>
-            <div class="step {{ in_array($reservation->status, ['pending','in_process','done']) ? 'active' : '' }}">
-                <i class="fa-solid fa-file-pen"></i>
-            </div>
-            <div class="label">Verify</div>
+   @if($reservation->status == 'done')
+        <div style="margin-top: 2em;">
+            <a href="{{ url('reservation/certificate/' . $reservation->id) }}" 
+            target="_blank" 
+            style="
+                display: inline-block;
+                background-color: #28a745;
+                color: white;
+                font-weight: bold;
+                padding: 12px 25px;
+                border-radius: 8px;
+                text-decoration: none;
+                box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+                transition: 0.3s;
+            ">
+            <i class="fa-solid fa-file-pdf"></i> View Reservation Certificate
+            </a>
         </div>
-        <div>
-            <div class="step {{ in_array($reservation->status, ['in_process','done']) ? 'active' : '' }}">
-                <i class="fa-solid fa-cross"></i>
+    @else
+        <div class="progress-container">
+            <div>
+                <div class="step {{ in_array($reservation->status, ['pending','in_process','done']) ? 'active' : '' }}">
+                    <i class="fa-solid fa-file-pen"></i>
+                </div>
+                <div class="label">Verify</div>
             </div>
-            <div class="label">For Review</div>
-        </div>
-        <div>
-            <div class="step {{ $reservation->status == 'done' ? 'active' : '' }}">
-                <i class="fa-solid fa-check"></i>
+            <div>
+                <div class="step {{ in_array($reservation->status, ['in_process','done']) ? 'active' : '' }}">
+                    <i class="fa-solid fa-cross"></i>
+                </div>
+                <div class="label">For Review</div>
             </div>
-            <div class="label">Done</div>
+            <div>
+                <div class="step {{ $reservation->status == 'done' ? 'active' : '' }}">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <div class="label">Done</div>
+            </div>
         </div>
-    </div>
-    
+    @endif
+
 </div>
   <footer>
         <p>&copy; 2025 City Public Cemetery. All rights reserved.</p>
