@@ -4,12 +4,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Plot extends Model {
 	protected $table = 'plots';
-	protected $fillable = ['section_id', 'number', 'lat', 'lng', 'status', 'burial_id'];
+	protected $fillable = ['section_id', 'number', 'lat', 'lng', 'status', 'burial_id','remarks','owner_name','owner_contact','date_purchased','transaction_type','applicant_name','applicant_contact','reservation_date','reservation_expiry','payment_status','prev_owner','quitclaim_date','restriction_reason'];
   public function section() {
         return $this->belongsTo(Section::class);
     }
     public function burial() {
         return $this->belongsTo(Burial::class);
+    }
+
+    public function burials()
+    {
+        return $this->hasMany(Burial::class);
     }
 
     public function getStatusColorAttribute() {

@@ -195,23 +195,51 @@ class CemeteryController extends Controller {
 
 		public function createPlot(Request $request)
 	{
+		
+		// dd(\Request::all());
+		$plotData = [
+			'number'           => $request->number,
+			'section_id'       => $request->section_id,
+			'lat'              => $request->lat,
+			'lng'              => $request->lng,
+			'status'           => $request->status,
+			'remarks'          => $request->remarks,
+			'cemetery_id'      => $request->cemetery_id,
+			'owner_name'       => $request->owner_name,
+			'owner_contact'    => $request->owner_contact,
+			'date_purchased'   => $request->date_purchased,
+			'transaction_type' => $request->transaction_type,
+			'applicant_name' => $request->applicant_name,
+			'applicant_contact' => $request->applicant_contact,
+			'reservation_date' => $request->reservation_date,
+			'reservation_expiry' => $request->reservation_expiry,
+			'payment_status' => $request->payment_status,
+			'prev_owner' => $request->prev_owner,
+			'quitclaim_date' => $request->quitclaim_date,
+			'restriction_reason' => $request->restriction_reason,
+		];
+
 		$plot = Plot::updateOrCreate(
-			[
-				'lat' => $request->lat,
-				'lng' => $request->lng,
-			],
-			[
-				'number' => $request->number,
-				'status' => $request->status,
-				'section_id' => $request->section_id,
-			]
+			['lat' => $request->lat, 'lng' => $request->lng],
+			$plotData
 		);
+		if ($request->status === 'sold_with_burial') {
+			$plot->burials()->delete();
+			foreach ($request->deceased as $d) {
+				$plot->burials()->create([
+					'deceased_name' => $d['name'],
+					'date_of_birth'           => $d['dob'] ? : null,
+					'date_of_death'           => $d['dod'] ? : null,
+					'burial_date'   => $d['burial_date'] ? : null,
+					'sex'           => $d['sex'],
+				]);
+			}
+		}
 
 		return response()->json([
 			'success' => true,
-			'message' => $plot->wasRecentlyCreated
-				? 'Plot created successfully!'
-				: 'Plot updated successfully!'
+			'message' => $plot->wasRecentlyCreated ? 'Plot created!' : 'Plot updated!',
+			'plot'    => $plot->load('burials')
 		]);
 	}
 
